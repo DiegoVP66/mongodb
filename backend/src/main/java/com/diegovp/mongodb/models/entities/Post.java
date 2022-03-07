@@ -3,6 +3,7 @@ package com.diegovp.mongodb.models.entities;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,7 +13,7 @@ import com.diegovp.mongodb.models.embedded.Comment;
 
 @Document(collection = "posts")
 public class Post {
-	
+
 	@Id
 	private String id;
 	private Instant moment;
@@ -76,6 +77,23 @@ public class Post {
 
 	public List<Comment> getComments() {
 		return comments;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Post other = (Post) obj;
+		return Objects.equals(id, other.id);
 	}
 
 }
