@@ -5,11 +5,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.diegovp.mongodb.models.dto.UserDTO;
 import com.diegovp.mongodb.models.entities.User;
 import com.diegovp.mongodb.repositories.UserRepository;
+import com.diegovp.mongodb.services.exceptions.DatabaseException;
 import com.diegovp.mongodb.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -41,6 +43,16 @@ public class UserService {
 		entity = repository.save(entity);
 		return new UserDTO(entity);
 
+	}
+
+	public void delete(String id) {
+		try {
+			getEntityById(id);
+			repository.deleteById(id);
+
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity violation!");
+		}
 	}
 
 	private User getEntityById(String id) {
